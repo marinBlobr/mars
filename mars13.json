@@ -1,0 +1,748 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LC Speech Assessment API",
+        "description": "Automatic Speech Assessment API",
+        "version": "1.0.1"
+    },
+    "paths": {
+        "/speech-assessment/health": {
+            "get": {
+                "summary": "Health Check",
+                "operationId": "health_check_speech_assessment_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Response Health Check Speech Assessment Health Get",
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/speech-assessment/scripted/{accent}": {
+            "post": {
+                "summary": "Speech Assessment Report Scripted",
+                "operationId": "speech_assessment_report_scripted_speech_assessment_scripted__accent__post",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Accent"
+                        },
+                        "name": "accent",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaapiRequestScripted"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SaapiScriptedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/speech-assessment/unscripted/{accent}": {
+            "post": {
+                "summary": "Speech Assessment Report Unscripted",
+                "operationId": "speech_assessment_report_unscripted_speech_assessment_unscripted__accent__post",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Accent"
+                        },
+                        "name": "accent",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaapiRequestUnscripted"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SaapiUnscriptedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pronunciation/{accent}": {
+            "post": {
+                "summary": "Pronunciation Report",
+                "operationId": "pronunciation_report_pronunciation__accent__post",
+                "parameters": [
+                    {
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/Accent"
+                        },
+                        "name": "accent",
+                        "in": "path"
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PronunciationRequest"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PronunciationReport"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Accent": {
+                "title": "Accent",
+                "enum": [
+                    "us",
+                    "uk"
+                ],
+                "description": "An enumeration."
+            },
+            "AudioFormat": {
+                "title": "AudioFormat",
+                "enum": [
+                    "wav",
+                    "mp3",
+                    "ogg",
+                    "m4a"
+                ],
+                "type": "string",
+                "description": "An enumeration."
+            },
+            "EnglishProficiencyScores": {
+                "title": "EnglishProficiencyScores",
+                "required": [
+                    "mock_ielts",
+                    "mock_cefr",
+                    "mock_pte"
+                ],
+                "type": "object",
+                "properties": {
+                    "mock_ielts": {
+                        "$ref": "#/components/schemas/MockIeltsScore"
+                    },
+                    "mock_cefr": {
+                        "$ref": "#/components/schemas/MockCefrScore"
+                    },
+                    "mock_pte": {
+                        "$ref": "#/components/schemas/MockPteScore"
+                    }
+                }
+            },
+            "FluencyFeedback": {
+                "title": "FluencyFeedback",
+                "required": [
+                    "speech_rate"
+                ],
+                "type": "object",
+                "properties": {
+                    "speech_rate": {
+                        "$ref": "#/components/schemas/SpeechRateFeedback"
+                    }
+                }
+            },
+            "FluencyMetricsReport": {
+                "title": "FluencyMetricsReport",
+                "required": [
+                    "speech_rate"
+                ],
+                "type": "object",
+                "properties": {
+                    "speech_rate": {
+                        "title": "Speech Rate",
+                        "type": "integer"
+                    }
+                }
+            },
+            "FluencyReport": {
+                "title": "FluencyReport",
+                "required": [
+                    "english_proficiency_scores"
+                ],
+                "type": "object",
+                "properties": {
+                    "metrics": {
+                        "$ref": "#/components/schemas/FluencyMetricsReport"
+                    },
+                    "english_proficiency_scores": {
+                        "$ref": "#/components/schemas/EnglishProficiencyScores"
+                    },
+                    "warnings": {
+                        "title": "Warnings",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    },
+                    "feedback": {
+                        "$ref": "#/components/schemas/FluencyFeedback"
+                    }
+                }
+            },
+            "GrammarMetrics": {
+                "title": "GrammarMetrics",
+                "required": [
+                    "mistake_count"
+                ],
+                "type": "object",
+                "properties": {
+                    "mistake_count": {
+                        "title": "Mistake Count",
+                        "type": "integer"
+                    }
+                }
+            },
+            "GrammarReport": {
+                "title": "GrammarReport",
+                "required": [
+                    "english_proficiency_scores"
+                ],
+                "type": "object",
+                "properties": {
+                    "metrics": {
+                        "$ref": "#/components/schemas/GrammarMetrics"
+                    },
+                    "english_proficiency_scores": {
+                        "$ref": "#/components/schemas/EnglishProficiencyScores"
+                    },
+                    "warnings": {
+                        "title": "Warnings",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    }
+                }
+            },
+            "HTTPValidationError": {
+                "title": "HTTPValidationError",
+                "type": "object",
+                "properties": {
+                    "detail": {
+                        "title": "Detail",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        }
+                    }
+                }
+            },
+            "MetadataReport": {
+                "title": "MetadataReport",
+                "required": [
+                    "predicted_text"
+                ],
+                "type": "object",
+                "properties": {
+                    "predicted_text": {
+                        "title": "Predicted Text",
+                        "type": "string"
+                    }
+                }
+            },
+            "MockCefrScore": {
+                "title": "MockCefrScore",
+                "required": [
+                    "prediction"
+                ],
+                "type": "object",
+                "properties": {
+                    "prediction": {
+                        "title": "Prediction",
+                        "type": "string"
+                    }
+                }
+            },
+            "MockIeltsScore": {
+                "title": "MockIeltsScore",
+                "required": [
+                    "prediction"
+                ],
+                "type": "object",
+                "properties": {
+                    "prediction": {
+                        "title": "Prediction",
+                        "type": "number"
+                    }
+                }
+            },
+            "MockPteScore": {
+                "title": "MockPteScore",
+                "required": [
+                    "prediction"
+                ],
+                "type": "object",
+                "properties": {
+                    "prediction": {
+                        "title": "Prediction",
+                        "type": "string"
+                    }
+                }
+            },
+            "OverallReport": {
+                "title": "OverallReport",
+                "required": [
+                    "english_proficiency_scores"
+                ],
+                "type": "object",
+                "properties": {
+                    "english_proficiency_scores": {
+                        "$ref": "#/components/schemas/EnglishProficiencyScores"
+                    }
+                }
+            },
+            "PhoneReport": {
+                "title": "PhoneReport",
+                "required": [
+                    "ipa_label",
+                    "phoneme_score"
+                ],
+                "type": "object",
+                "properties": {
+                    "ipa_label": {
+                        "title": "Ipa Label",
+                        "type": "string"
+                    },
+                    "phoneme_score": {
+                        "title": "Phoneme Score",
+                        "type": "integer"
+                    }
+                }
+            },
+            "PronunciationReport": {
+                "title": "PronunciationReport",
+                "required": [
+                    "words",
+                    "overall_score",
+                    "expected_text",
+                    "english_proficiency_scores",
+                    "lowest_scoring_phonemes"
+                ],
+                "type": "object",
+                "properties": {
+                    "words": {
+                        "title": "Words",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/WordReport"
+                        }
+                    },
+                    "overall_score": {
+                        "title": "Overall Score",
+                        "type": "number"
+                    },
+                    "expected_text": {
+                        "title": "Expected Text",
+                        "type": "string"
+                    },
+                    "english_proficiency_scores": {
+                        "$ref": "#/components/schemas/EnglishProficiencyScores"
+                    },
+                    "warnings": {
+                        "title": "Warnings",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    },
+                    "lowest_scoring_phonemes": {
+                        "title": "Lowest Scoring Phonemes",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PhoneReport"
+                        }
+                    }
+                }
+            },
+            "PronunciationRequest": {
+                "title": "PronunciationRequest",
+                "required": [
+                    "audio_base64",
+                    "audio_format",
+                    "expected_text"
+                ],
+                "type": "object",
+                "properties": {
+                    "audio_base64": {
+                        "title": "Audio Base64",
+                        "type": "string"
+                    },
+                    "audio_format": {
+                        "$ref": "#/components/schemas/AudioFormat"
+                    },
+                    "expected_text": {
+                        "title": "Expected Text",
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "SaapiRequestScripted": {
+                "title": "SaapiRequestScripted",
+                "required": [
+                    "audio_base64",
+                    "audio_format",
+                    "expected_text"
+                ],
+                "type": "object",
+                "properties": {
+                    "audio_base64": {
+                        "title": "Audio Base64",
+                        "type": "string"
+                    },
+                    "audio_format": {
+                        "$ref": "#/components/schemas/AudioFormat"
+                    },
+                    "expected_text": {
+                        "title": "Expected Text",
+                        "type": "string"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "SaapiRequestUnscripted": {
+                "title": "SaapiRequestUnscripted",
+                "required": [
+                    "audio_base64",
+                    "audio_format"
+                ],
+                "type": "object",
+                "properties": {
+                    "audio_base64": {
+                        "title": "Audio Base64",
+                        "type": "string"
+                    },
+                    "audio_format": {
+                        "$ref": "#/components/schemas/AudioFormat"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "SaapiScriptedResponse": {
+                "title": "SaapiScriptedResponse",
+                "required": [
+                    "pronunciation",
+                    "fluency",
+                    "overall",
+                    "metadata"
+                ],
+                "type": "object",
+                "properties": {
+                    "pronunciation": {
+                        "$ref": "#/components/schemas/PronunciationReport"
+                    },
+                    "fluency": {
+                        "$ref": "#/components/schemas/FluencyReport"
+                    },
+                    "overall": {
+                        "$ref": "#/components/schemas/OverallReport"
+                    },
+                    "metadata": {
+                        "title": "Metadata",
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ScriptedMetadataReport"
+                            },
+                            {
+                                "$ref": "#/components/schemas/MetadataReport"
+                            }
+                        ]
+                    },
+                    "warnings": {
+                        "title": "Warnings",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    }
+                }
+            },
+            "SaapiUnscriptedResponse": {
+                "title": "SaapiUnscriptedResponse",
+                "required": [
+                    "pronunciation",
+                    "fluency",
+                    "overall",
+                    "metadata",
+                    "vocabulary",
+                    "grammar"
+                ],
+                "type": "object",
+                "properties": {
+                    "pronunciation": {
+                        "$ref": "#/components/schemas/PronunciationReport"
+                    },
+                    "fluency": {
+                        "$ref": "#/components/schemas/FluencyReport"
+                    },
+                    "overall": {
+                        "$ref": "#/components/schemas/OverallReport"
+                    },
+                    "metadata": {
+                        "title": "Metadata",
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/ScriptedMetadataReport"
+                            },
+                            {
+                                "$ref": "#/components/schemas/MetadataReport"
+                            }
+                        ]
+                    },
+                    "warnings": {
+                        "title": "Warnings",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    },
+                    "vocabulary": {
+                        "$ref": "#/components/schemas/VocabReport"
+                    },
+                    "grammar": {
+                        "$ref": "#/components/schemas/GrammarReport"
+                    }
+                }
+            },
+            "ScriptedMetadataReport": {
+                "title": "ScriptedMetadataReport",
+                "required": [
+                    "predicted_text",
+                    "content_relevance"
+                ],
+                "type": "object",
+                "properties": {
+                    "predicted_text": {
+                        "title": "Predicted Text",
+                        "type": "string"
+                    },
+                    "content_relevance": {
+                        "title": "Content Relevance",
+                        "type": "integer"
+                    }
+                }
+            },
+            "SpeechRateFeedback": {
+                "title": "SpeechRateFeedback",
+                "required": [
+                    "feedback_code",
+                    "feedback_text"
+                ],
+                "type": "object",
+                "properties": {
+                    "feedback_code": {
+                        "$ref": "#/components/schemas/SpeechRateFeedbackCode"
+                    },
+                    "feedback_text": {
+                        "$ref": "#/components/schemas/SpeechRateFeedbackMessage"
+                    }
+                }
+            },
+            "SpeechRateFeedbackCode": {
+                "title": "SpeechRateFeedbackCode",
+                "enum": [
+                    "TOO_SLOW",
+                    "NORMAL",
+                    "TOO_FAST"
+                ],
+                "type": "string",
+                "description": "An enumeration."
+            },
+            "SpeechRateFeedbackMessage": {
+                "title": "SpeechRateFeedbackMessage",
+                "enum": [
+                    "You are speaking too slow.",
+                    "You are speaking at a normal pace.",
+                    "You are speaking too fast."
+                ],
+                "type": "string",
+                "description": "An enumeration."
+            },
+            "ValidationError": {
+                "title": "ValidationError",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "loc": {
+                        "title": "Location",
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        }
+                    },
+                    "msg": {
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "title": "Error Type",
+                        "type": "string"
+                    }
+                }
+            },
+            "VocabMetrics": {
+                "title": "VocabMetrics",
+                "required": [
+                    "sentence_complexity"
+                ],
+                "type": "object",
+                "properties": {
+                    "sentence_complexity": {
+                        "title": "Sentence Complexity",
+                        "type": "number"
+                    }
+                }
+            },
+            "VocabReport": {
+                "title": "VocabReport",
+                "required": [
+                    "english_proficiency_scores"
+                ],
+                "type": "object",
+                "properties": {
+                    "metrics": {
+                        "$ref": "#/components/schemas/VocabMetrics"
+                    },
+                    "english_proficiency_scores": {
+                        "$ref": "#/components/schemas/EnglishProficiencyScores"
+                    },
+                    "warnings": {
+                        "title": "Warnings",
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "default": {}
+                    }
+                }
+            },
+            "WordReport": {
+                "title": "WordReport",
+                "required": [
+                    "word_text",
+                    "phonemes",
+                    "word_score"
+                ],
+                "type": "object",
+                "properties": {
+                    "word_text": {
+                        "title": "Word Text",
+                        "type": "string"
+                    },
+                    "phonemes": {
+                        "title": "Phonemes",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PhoneReport"
+                        }
+                    },
+                    "word_score": {
+                        "title": "Word Score",
+                        "type": "integer"
+                    }
+                }
+            }
+        }
+    }
+}
